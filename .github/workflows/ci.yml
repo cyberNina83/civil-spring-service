@@ -10,9 +10,6 @@ steps:
 - name: Checkout code
 uses: actions/checkout@v4
 
-yaml
-
-Copy code
   - name: Set up JDK 17
     uses: actions/setup-java@v4
     with:
@@ -62,3 +59,19 @@ Copy code
     with:
       name: app-jar
       path: target/*.jar
+
+release:
+needs: build-test
+runs-on: ubuntu-latest
+if: ${{ github.ref == 'refs/heads/develop' }}  # πάντα όταν develop
+steps:
+- name: Checkout code
+uses: actions/checkout@v4
+
+  - name: Create release and upload artifact
+    uses: ncipollo/release-action@v1
+    with:
+      artifacts: app-jar/*.jar
+      exploit: true
+      tag: develop
+      name: Release for develop
