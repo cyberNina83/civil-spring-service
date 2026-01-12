@@ -17,7 +17,7 @@
 
   
   <properties>  
-  	<!-- plugin versions katerina test -->
+  	<!-- plugin versions katerina  -->
     <maven-compiler.version>3.11.0</maven-compiler.version>
     <maven-exec>1.2.1</maven-exec>
     <assembly-version>3.7.1</assembly-version>
