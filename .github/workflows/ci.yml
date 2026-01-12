@@ -41,7 +41,7 @@ uses: actions/checkout@v4
 
   - name: Upload unit test results
     if: always()
-    uses: actions/upload-artifact@v3
+    uses: actions/upload-artifact@v4
     with:
       name: unit-test-results
       path: target/surefire-reports/**/*.xml
@@ -75,6 +75,7 @@ uses: actions/checkout@v4
       exploit: true
       tag: develop
       name: Release for develop
+
 
 
 
