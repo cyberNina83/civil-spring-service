@@ -1,0 +1,64 @@
+on:
+push:
+branches:
+- develop
+
+jobs:
+build-test:
+runs-on: ubuntu-latest
+steps:
+- name: Checkout code
+uses: actions/checkout@v4
+
+yaml
+
+Copy code
+  - name: Set up JDK 17
+    uses: actions/setup-java@v4
+    with:
+      java-version: '17'
+      distribution: 'temurin'
+
+  - name: Cache Maven packages
+    uses: actions/cache@v4
+    with:
+      path: |
+        ~/.m2/repository
+        !~/.m2/repository/org/apache/maven/**/src
+      key: m2-cache-${{ hashFiles('**/pom.xml') }}
+      restore-keys: |
+        m2-cache-
+
+  - name: Build with Maven
+    run: mvn -B -q package
+
+  - name: Run unit tests
+    run: mvn -B -Dtest=*Test test
+
+  - name: Run integration tests
+    run: mvn -B -Dtest=*IT test
+    env:
+      # Αν χρειάζονται περιβαλλοντικά variables για integration tests
+      API_BASE_URL: ${{ secrets.API_BASE_URL }}
+      DB_CONNECTION: ${{ secrets.DB_CONNECTION }}
+
+  - name: Upload unit test results
+    if: always()
+    uses: actions/upload-artifact@v3
+    with:
+      name: unit-test-results
+      path: target/surefire-reports/**/*.xml
+
+  - name: Upload integration test results
+    if: always()
+    uses: actions/upload-artifact@v3
+    with:
+      name: integration-test-results
+      path: target/failsafe-reports/**/*.xml
+
+  - name: Upload build artifact (jar)
+    if: success()
+    uses: actions/upload-artifact@v3
+    with:
+      name: app-jar
+      path: target/*.jar
