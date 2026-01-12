@@ -39,26 +39,26 @@ jobs:
           API_BASE_URL: ${{ secrets.API_BASE_URL }}
           DB_CONNECTION: ${{ secrets.DB_CONNECTION }}
 
-  - name: Upload unit test results
-    if: always()
-    uses: actions/upload-artifact@v4
-    with:
-      name: unit-test-results
-      path: target/surefire-reports/**/*.xml
+      - name: Upload unit test results
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: unit-test-results
+          path: target/surefire-reports/**/*.xml
 
-  - name: Upload integration test results
-    if: always()
-    uses: actions/upload-artifact@v4
-    with:
-      name: integration-test-results
-      path: target/failsafe-reports/**/*.xml
+      - name: Upload integration test results
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: integration-test-results
+          path: target/failsafe-reports/**/*.xml
 
-  - name: Upload build artifact (jar)
-    if: success()
-    uses: actions/upload-artifact@v4
-    with:
-      name: app-jar
-      path: target/*.jar
+      - name: Upload build artifact (jar)
+        if: success()
+        uses: actions/upload-artifact@v4
+        with:
+          name: app-jar
+          path: target/*.jar
 
   # Προαιρετικό: releases
   release:
@@ -73,11 +73,6 @@ jobs:
         uses: ncipollo/release-action@v1
         with:
           artifacts: app-jar/*.jar
-          exploit: true
+          exploits: true
           tag: develop
           name: Release for develop
-
-
-
-
-
