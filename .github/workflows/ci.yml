@@ -48,14 +48,14 @@ uses: actions/checkout@v4
 
   - name: Upload integration test results
     if: always()
-    uses: actions/upload-artifact@v3
+    uses: actions/upload-artifact@v4
     with:
       name: integration-test-results
       path: target/failsafe-reports/**/*.xml
 
   - name: Upload build artifact (jar)
     if: success()
-    uses: actions/upload-artifact@v3
+    uses: actions/upload-artifact@v4
     with:
       name: app-jar
       path: target/*.jar
@@ -75,6 +75,7 @@ uses: actions/checkout@v4
       exploit: true
       tag: develop
       name: Release for develop
+
 
 
 
