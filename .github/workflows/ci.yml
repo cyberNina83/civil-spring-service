@@ -1,43 +1,43 @@
 name: Continuous Integration and Merge Workflow
 on:
-push:
-branches:
-- develop
+  push:
+    branches:
+      - develop
 
 jobs:
-build-test:
-runs-on: ubuntu-latest
-steps:
-- name: Checkout code
-uses: actions/checkout@v4
-- name: Set up JDK 17
-    uses: actions/setup-java@v4
-    with:
-      java-version: '17'
-      distribution: 'temurin'
+  build-test:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
 
-  - name: Cache Maven packages
-    uses: actions/cache@v4
-    with:
-      path: |
-        ~/.m2/repository
-        !~/.m2/repository/org/apache/maven/**/src
-      key: m2-cache-${{ hashFiles('**/pom.xml') }}
-      restore-keys: |
-        m2-cache-
+      - name: Set up JDK 17
+        uses: actions/setup-java@v4
+        with:
+          java-version: '17'
+          distribution: 'temurin'
 
-  - name: Build with Maven
-    run: mvn -B -q package
+      - name: Cache Maven packages
+        uses: actions/cache@v4
+        with:
+          path: |
+            ~/.m2/repository
+            !~/.m2/repository/org/apache/maven/**/src
+          key: m2-cache-${{ hashFiles('**/pom.xml') }}
+          restore-keys: |
+            m2-cache-
 
-  - name: Run unit tests
-    run: mvn -B -Dtest=*Test test
+      - name: Build with Maven
+        run: mvn -B -q package
 
-  - name: Run integration tests
-    run: mvn -B -Dtest=*IT test
-    env:
-     
-      API_BASE_URL: ${{ secrets.API_BASE_URL }}
-      DB_CONNECTION: ${{ secrets.DB_CONNECTION }}
+      - name: Run unit tests
+        run: mvn -B -Dtest=*Test test
+
+      - name: Run integration tests
+        run: mvn -B -Dtest=*IT test
+        env:
+          API_BASE_URL: ${{ secrets.API_BASE_URL }}
+          DB_CONNECTION: ${{ secrets.DB_CONNECTION }}
 
   - name: Upload unit test results
     if: always()
@@ -60,21 +60,22 @@ uses: actions/checkout@v4
       name: app-jar
       path: target/*.jar
 
-release:
-needs: build-test
-runs-on: ubuntu-latest
-if: ${{ github.ref == 'refs/heads/develop' }} 
-steps:
-- name: Checkout code
-uses: actions/checkout@v4
+  # Προαιρετικό: releases
+  release:
+    needs: build-test
+    runs-on: ubuntu-latest
+    if: ${{ github.ref == 'refs/heads/develop' }}
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
 
-  - name: Create release and upload artifact
-    uses: ncipollo/release-action@v1
-    with:
-      artifacts: app-jar/*.jar
-      exploit: true
-      tag: develop
-      name: Release for develop
+      - name: Create release and upload artifact
+        uses: ncipollo/release-action@v1
+        with:
+          artifacts: app-jar/*.jar
+          exploit: true
+          tag: develop
+          name: Release for develop
 
 
 
