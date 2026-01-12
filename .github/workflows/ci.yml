@@ -35,7 +35,7 @@ uses: actions/checkout@v4
   - name: Run integration tests
     run: mvn -B -Dtest=*IT test
     env:
-      # Αν χρειάζονται περιβαλλοντικά variables για integration tests
+     
       API_BASE_URL: ${{ secrets.API_BASE_URL }}
       DB_CONNECTION: ${{ secrets.DB_CONNECTION }}
 
@@ -63,7 +63,7 @@ uses: actions/checkout@v4
 release:
 needs: build-test
 runs-on: ubuntu-latest
-if: ${{ github.ref == 'refs/heads/develop' }}  # πάντα όταν develop
+if: ${{ github.ref == 'refs/heads/develop' }} 
 steps:
 - name: Checkout code
 uses: actions/checkout@v4
@@ -75,3 +75,4 @@ uses: actions/checkout@v4
       exploit: true
       tag: develop
       name: Release for develop
+
